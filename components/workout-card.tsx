@@ -69,28 +69,17 @@ export function WorkoutCard({
 }
 
 /** Initials bubble — nobody uploads a profile picture in a group of friends. */
-export function Avatar({
-  name,
-  size = "md",
-}: {
-  name: string;
-  size?: "sm" | "md";
-}) {
+export function Avatar({ name }: { name: string }) {
   const initials = name
     .split(/\s+/)
     .slice(0, 2)
     .map((part) => part[0]?.toUpperCase() ?? "")
     .join("");
 
-  const sizes = {
-    sm: "h-8 w-8 text-xs",
-    md: "h-10 w-10 text-sm",
-  };
-
   return (
     <span
       aria-hidden="true"
-      className={`flex shrink-0 items-center justify-center rounded-full bg-primary font-bold text-primary-foreground ${sizes[size]}`}
+      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground"
     >
       {initials}
     </span>

@@ -2,7 +2,8 @@
 
 import { useActionState, useState } from "react";
 
-import { createChallenge, emptyFormState } from "@/app/actions";
+import { createChallenge } from "@/app/actions";
+import { emptyFormState } from "@/lib/form-state";
 import { ErrorBanner, primaryButtonClass } from "@/components/ui";
 
 const fieldClass =
@@ -14,7 +15,11 @@ const labelClass = "mb-2 block text-sm font-semibold";
 function isoDate(offsetDays = 0) {
   const date = new Date();
   date.setDate(date.getDate() + offsetDays);
-  return date.toISOString().slice(0, 10);
+  // Built from local parts on purpose: toISOString() converts to UTC, which
+  // lands on the wrong day either side of midnight depending on the timezone.
+  const month = `${date.getMonth() + 1}`.padStart(2, "0");
+  const day = `${date.getDate()}`.padStart(2, "0");
+  return `${date.getFullYear()}-${month}-${day}`;
 }
 
 export function ChallengeForm() {

@@ -4,16 +4,13 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { getSupabase } from "@/lib/supabase";
+import type { FormState } from "@/lib/form-state";
 import {
   DURATIONS,
   WORKOUT_TYPES,
   type Duration,
   type WorkoutType,
 } from "@/lib/types";
-
-export type FormState = { error: string | null };
-
-export const emptyFormState: FormState = { error: null };
 
 const WORKOUT_TYPE_VALUES = WORKOUT_TYPES.map((t) => t.value) as string[];
 const DURATION_VALUES = DURATIONS.map((d) => d.value) as string[];
@@ -91,9 +88,9 @@ export async function createChallenge(
 }
 
 /**
- * Records a workout. The media itself is uploaded straight from the browser to
- * Supabase Storage first — videos are far too big to push through a Server
- * Action body — so this only receives the resulting public URL.
+ * Records a workout. The media is uploaded first via /api/upload — videos are
+ * far too big to push through a Server Action body — so this only receives the
+ * resulting public URL.
  */
 export async function logWorkout(
   _prevState: FormState,

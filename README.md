@@ -1,36 +1,76 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Go Gym or Go Broke
 
-## Getting Started
+A workout accountability tracker for a group of friends. Someone sets a
+challenge, everyone commits to N workouts a week, and every workout has to be
+backed by proof captured live on camera. Miss your number and you go broke.
 
-First, run the development server:
+## Stack
+
+Next.js 16 (App Router, Turbopack) · React 19 · Tailwind v4 · Supabase
+(Postgres + Storage) · TypeScript.
+
+## Setup
+
+1. **Create a Supabase project** at [supabase.com](https://supabase.com).
+
+2. **Run the schema.** Open the SQL Editor and run [`supabase/schema.sql`](supabase/schema.sql).
+   It creates the tables, indexes, row-level security and the public `proofs`
+   storage bucket.
+
+3. **Add your credentials** to `.env` (see [`.env.local.example`](.env.local.example)):
+
+   ```
+   SUPABASE_URL=https://xxxx.supabase.co
+   SUPABASE_SERVICE_ROLE_KEY=eyJhbGci...
+   TZ=Europe/London
+   ```
+
+   The service role key is read on the server only and must never get a
+   `NEXT_PUBLIC_` prefix — that would ship a key that bypasses row-level
+   security to every visitor's browser.
+
+4. **Run it:**
+
+   ```bash
+   npm install
+   npm run dev
+   ```
+
+## Testing the camera on a phone
+
+`getUserMedia` only works in a secure context, so `http://<your-lan-ip>:3000`
+will silently fail to open the camera. Use:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run dev:https
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+and accept the self-signed certificate on the phone. Installing to the home
+screen also needs HTTPS.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Pages
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Route              | What it does                                                        |
+| ------------------ | ------------------------------------------------------------------- |
+| `/`                | Daily feed of every workout, grouped under date headers             |
+| `/post`            | Live camera capture plus the workout details form                   |
+| `/challenges`      | Every challenge with its status, target and size                    |
+| `/challenges/[id]` | Roster, rules, total weeks, this week's scores and recent proof     |
+| `/progress`        | The `Eric (2/4)` scoreboard, navigable week by week                 |
+| `/admin`           | Create a challenge and add participants                             |
 
-## Learn More
+## Notes
 
-To learn more about Next.js, take a look at the following resources:
+- **No accounts.** Everyone shares one link and picks their name from a
+  dropdown. That also means `/admin` and `/api/upload` are open to anyone who
+  has the URL — fine for a private group link, not for a public deployment.
+- **Timezone matters.** Dates render on the server and are compared against
+  date-only challenge boundaries, so the process must run in the group's
+  timezone. Set `TZ` in production; hosts default to UTC.
+- **Proof is camera-only.** There is no file picker anywhere, so an old photo
+  from the camera roll can't be posted.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Deploying
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Set `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` and `TZ` as environment
+variables on your host, then deploy as a standard Next.js app.

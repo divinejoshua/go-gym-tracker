@@ -48,7 +48,10 @@ export function CameraCapture({
   }, []);
 
   const start = useCallback(
-    async (nextFacing: "environment" | "user" = facing) => {
+    async (
+      nextFacing: "environment" | "user" = facing,
+      nextMode: Mode = mode,
+    ) => {
       setError(null);
       setStatus("starting");
 
@@ -65,9 +68,10 @@ export function CameraCapture({
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
           video: { facingMode: nextFacing, width: { ideal: 1280 } },
-          // Audio is only needed for video, but asking once avoids a second
-          // permission prompt when someone flips to video mode mid-session.
-          audio: mode === "video",
+          // Passed in rather than read from state: switchMode calls this in the
+          // same tick as setMode, so the state value here would still be stale
+          // and video would record with no audio track.
+          audio: nextMode === "video",
         });
 
         streamRef.current = stream;
@@ -216,7 +220,7 @@ export function CameraCapture({
     if (next === mode) return;
     setMode(next);
     // Video needs an audio track the photo stream may not have, so re-open.
-    if (status === "live") void start();
+    if (status === "live") void start(facing, next);
   }
 
   return (

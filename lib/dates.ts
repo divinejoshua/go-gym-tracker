@@ -1,6 +1,18 @@
 const MS_PER_DAY = 24 * 60 * 60 * 1000;
 
 /**
+ * Everything below runs in the process's own timezone, and mixes two kinds of
+ * value: instants (`workouts.created_at`) and date-only values (a challenge's
+ * start/end, week boundaries), which are parsed as local midnight.
+ *
+ * Keeping both in one zone is what makes them comparable, so the group's
+ * timezone must be the *process* timezone. In local dev that is already true.
+ * In production set the TZ environment variable (e.g. TZ=Europe/London) —
+ * hosts default to UTC, which would file a 00:30 workout under yesterday and
+ * shift week boundaries by the UTC offset.
+ */
+
+/**
  * Parse a Postgres `date` ("2026-09-15") as local midnight.
  * `new Date("2026-09-15")` would parse as UTC and shift the day for anyone
  * west of Greenwich, which would throw the week maths off by one.
