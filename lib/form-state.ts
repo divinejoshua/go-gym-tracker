@@ -5,6 +5,11 @@
  * only export async functions, so exporting `emptyFormState` from there fails
  * the build with "A 'use server' file can only export async functions".
  */
-export type FormState = { error: string | null };
+export type FormState = {
+  /** Summary shown at the end of the form. */
+  error: string | null;
+  /** Per-field messages, keyed by the input's `name`. */
+  fieldErrors?: Record<string, string>;
+};
 
 export const emptyFormState: FormState = { error: null };

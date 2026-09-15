@@ -11,6 +11,21 @@ const fieldClass =
 
 const labelClass = "mb-2 block text-sm font-semibold";
 
+/** Inline message under a field, tied to the input via aria-describedby. */
+function FieldError({ id, message }: { id: string; message?: string }) {
+  if (!message) return null;
+  return (
+    <p id={id} className="mt-1.5 text-sm font-medium text-destructive">
+      {message}
+    </p>
+  );
+}
+
+/** Red ring on the offending input so the eye lands on it straight away. */
+function fieldStyle(invalid: boolean) {
+  return invalid ? `${fieldClass} border-destructive` : fieldClass;
+}
+
 /** Today and four weeks out, as sensible date-input defaults. */
 function isoDate(offsetDays = 0) {
   const date = new Date();
@@ -24,6 +39,7 @@ function isoDate(offsetDays = 0) {
 
 export function ChallengeForm() {
   const [state, formAction, pending] = useActionState(createChallenge, emptyFormState);
+  const errors = state.fieldErrors ?? {};
 
   // Row identity lives in state so removing a middle row doesn't shuffle the
   // values of the rows below it.
@@ -50,9 +66,12 @@ export function ChallengeForm() {
           name="name"
           type="text"
           placeholder="Summer Shred 2026"
-          className={fieldClass}
+          className={fieldStyle(Boolean(errors.name))}
+          aria-invalid={Boolean(errors.name)}
+          aria-describedby={errors.name ? "name-error" : undefined}
           required
         />
+        <FieldError id="name-error" message={errors.name} />
       </div>
 
       <div>
@@ -67,9 +86,14 @@ export function ChallengeForm() {
           max={14}
           defaultValue={4}
           inputMode="numeric"
-          className={fieldClass}
+          className={fieldStyle(Boolean(errors.workouts_per_week))}
+          aria-invalid={Boolean(errors.workouts_per_week)}
+          aria-describedby={
+            errors.workouts_per_week ? "workouts-error" : undefined
+          }
           required
         />
+        <FieldError id="workouts-error" message={errors.workouts_per_week} />
         <p className="mt-2 text-xs text-muted-foreground">
           Miss the target in a week and you go broke.
         </p>
@@ -85,9 +109,11 @@ export function ChallengeForm() {
             name="start_date"
             type="date"
             defaultValue={isoDate()}
-            className={fieldClass}
+            className={fieldStyle(Boolean(errors.start_date))}
+            aria-invalid={Boolean(errors.start_date)}
             required
           />
+          <FieldError id="start-error" message={errors.start_date} />
         </div>
         <div>
           <label htmlFor="end_date" className={labelClass}>
@@ -98,9 +124,11 @@ export function ChallengeForm() {
             name="end_date"
             type="date"
             defaultValue={isoDate(27)}
-            className={fieldClass}
+            className={fieldStyle(Boolean(errors.end_date))}
+            aria-invalid={Boolean(errors.end_date)}
             required
           />
+          <FieldError id="end-error" message={errors.end_date} />
         </div>
       </div>
 
@@ -114,7 +142,11 @@ export function ChallengeForm() {
                 type="text"
                 placeholder={`Person ${index + 1}`}
                 aria-label={`Participant ${index + 1}`}
-                className={fieldClass}
+                className={fieldStyle(Boolean(errors.participant))}
+                aria-invalid={Boolean(errors.participant)}
+                // Only the first row is mandatory — the rest are spare slots,
+                // and the action ignores any left blank.
+                required={index === 0}
               />
               <button
                 type="button"
@@ -128,6 +160,7 @@ export function ChallengeForm() {
             </div>
           ))}
         </div>
+        <FieldError id="participant-error" message={errors.participant} />
         <button
           type="button"
           onClick={addRow}

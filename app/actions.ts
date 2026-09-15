@@ -35,17 +35,38 @@ export async function createChallenge(
     .map((value) => value.toString().trim())
     .filter(Boolean);
 
-  if (!name) return { error: "Give the challenge a name." };
-  if (!Number.isInteger(workoutsPerWeek) || workoutsPerWeek < 1 || workoutsPerWeek > 14) {
-    return { error: "Workouts per week must be a whole number between 1 and 14." };
+  // Collect every problem in one pass so the form can mark all the bad fields
+  // at once, rather than making someone resubmit to discover the next one.
+  const fieldErrors: Record<string, string> = {};
+
+  if (!name) fieldErrors.name = "Give the challenge a name.";
+
+  // Number("") is 0, which passes isInteger — so test the raw string first,
+  // otherwise a blank field reports the range message instead of "missing".
+  if (!text(formData, "workouts_per_week")) {
+    fieldErrors.workouts_per_week = "Enter how many workouts a week.";
+  } else if (!Number.isInteger(workoutsPerWeek)) {
+    fieldErrors.workouts_per_week = "That needs to be a whole number.";
+  } else if (workoutsPerWeek < 1 || workoutsPerWeek > 14) {
+    fieldErrors.workouts_per_week = "Pick a number between 1 and 14.";
   }
-  if (!startDate || !endDate) return { error: "Pick a start and an end date." };
-  if (endDate < startDate) return { error: "The end date must come after the start date." };
-  if (names.length === 0) return { error: "Add at least one person to the challenge." };
+
+  if (!startDate) fieldErrors.start_date = "Pick a start date.";
+  if (!endDate) fieldErrors.end_date = "Pick an end date.";
+  if (startDate && endDate && endDate < startDate) {
+    fieldErrors.end_date = "The end date must come after the start date.";
+  }
 
   const deduped = [...new Set(names.map((n) => n.replace(/\s+/g, " ")))];
-  if (deduped.length !== names.length) {
-    return { error: "Two people have the same name — make them unique." };
+
+  if (names.length === 0) {
+    fieldErrors.participant = "Add at least one person to the challenge.";
+  } else if (deduped.length !== names.length) {
+    fieldErrors.participant = "Two people have the same name — make them unique.";
+  }
+
+  if (Object.keys(fieldErrors).length > 0) {
+    return { error: "Some details are missing. Check the fields below.", fieldErrors };
   }
 
   const supabase = getSupabase();
