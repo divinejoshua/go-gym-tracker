@@ -17,6 +17,12 @@ Next.js 16 (App Router, Turbopack) · React 19 · Tailwind v4 · Supabase
    It creates the tables, indexes, row-level security and the public `proofs`
    storage bucket.
 
+   Tables are prefixed `gogym_` (`gogym_challenges`, `gogym_participants`,
+   `gogym_workouts`) so they stay identifiable in a project shared with other
+   apps. If you already created the unprefixed tables with an earlier version,
+   run [`supabase/migrations/001_prefix_tables.sql`](supabase/migrations/001_prefix_tables.sql)
+   instead — it renames them in place and keeps your data.
+
 3. **Add your credentials** to `.env` (see [`.env.local.example`](.env.local.example)):
 
    ```

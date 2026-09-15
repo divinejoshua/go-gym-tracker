@@ -6,22 +6,22 @@ import type { Challenge, FeedWorkout, Participant, Workout } from "@/lib/types";
 
 /** Supabase returns embedded rows as nested objects; unwrap them into flat fields. */
 type WorkoutWithNames = Workout & {
-  participants: { name: string } | null;
-  challenges: { name: string } | null;
+  participant: { name: string } | null;
+  challenge: { name: string } | null;
 };
 
 function flatten(row: WorkoutWithNames): FeedWorkout {
-  const { participants, challenges, ...workout } = row;
+  const { participant, challenge, ...workout } = row;
   return {
     ...workout,
-    participant_name: participants?.name ?? "Unknown",
-    challenge_name: challenges?.name ?? "Unknown challenge",
+    participant_name: participant?.name ?? "Unknown",
+    challenge_name: challenge?.name ?? "Unknown challenge",
   };
 }
 
 export async function getChallenges(): Promise<Challenge[]> {
   const { data, error } = await getSupabase()
-    .from("challenges")
+    .from("gogym_challenges")
     .select("*")
     .order("start_date", { ascending: false });
 
@@ -31,7 +31,7 @@ export async function getChallenges(): Promise<Challenge[]> {
 
 export async function getChallenge(id: string): Promise<Challenge | null> {
   const { data, error } = await getSupabase()
-    .from("challenges")
+    .from("gogym_challenges")
     .select("*")
     .eq("id", id)
     .maybeSingle();
@@ -44,7 +44,7 @@ export async function getParticipants(
   challengeId: string,
 ): Promise<Participant[]> {
   const { data, error } = await getSupabase()
-    .from("participants")
+    .from("gogym_participants")
     .select("*")
     .eq("challenge_id", challengeId)
     .order("name");
@@ -56,8 +56,8 @@ export async function getParticipants(
 /** Newest workouts across every challenge — the home feed. */
 export async function getFeed(limit = 100): Promise<FeedWorkout[]> {
   const { data, error } = await getSupabase()
-    .from("workouts")
-    .select("*, participants(name), challenges(name)")
+    .from("gogym_workouts")
+    .select("*, participant:gogym_participants(name), challenge:gogym_challenges(name)")
     .order("created_at", { ascending: false })
     .limit(limit);
 
@@ -70,8 +70,8 @@ export async function getChallengeFeed(
   limit = 100,
 ): Promise<FeedWorkout[]> {
   const { data, error } = await getSupabase()
-    .from("workouts")
-    .select("*, participants(name), challenges(name)")
+    .from("gogym_workouts")
+    .select("*, participant:gogym_participants(name), challenge:gogym_challenges(name)")
     .eq("challenge_id", challengeId)
     .order("created_at", { ascending: false })
     .limit(limit);
@@ -100,12 +100,12 @@ export async function getWeeklyProgress(
 
   const [participantsResult, workoutsResult] = await Promise.all([
     supabase
-      .from("participants")
+      .from("gogym_participants")
       .select("*")
       .eq("challenge_id", challenge.id)
       .order("name"),
     supabase
-      .from("workouts")
+      .from("gogym_workouts")
       .select("*")
       .eq("challenge_id", challenge.id)
       .gte("created_at", start.toISOString())
@@ -145,7 +145,7 @@ export async function getWeeklyProgress(
 /** Every participant across every challenge — the post form filters client-side. */
 export async function getAllParticipants(): Promise<Participant[]> {
   const { data, error } = await getSupabase()
-    .from("participants")
+    .from("gogym_participants")
     .select("*")
     .order("name");
 

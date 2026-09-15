@@ -72,7 +72,7 @@ export async function createChallenge(
   const supabase = getSupabase();
 
   const { data: challenge, error: challengeError } = await supabase
-    .from("challenges")
+    .from("gogym_challenges")
     .insert({
       name,
       rules,
@@ -87,7 +87,7 @@ export async function createChallenge(
     return { error: challengeError?.message ?? "Could not create the challenge." };
   }
 
-  const { error: participantsError } = await supabase.from("participants").insert(
+  const { error: participantsError } = await supabase.from("gogym_participants").insert(
     deduped.map((participantName) => ({
       challenge_id: challenge.id,
       name: participantName,
@@ -96,7 +96,7 @@ export async function createChallenge(
 
   if (participantsError) {
     // Roll back so we never leave a challenge with nobody in it.
-    await supabase.from("challenges").delete().eq("id", challenge.id);
+    await supabase.from("gogym_challenges").delete().eq("id", challenge.id);
     return { error: `Could not add the people: ${participantsError.message}` };
   }
 
@@ -140,7 +140,7 @@ export async function logWorkout(
   }
   if (!venue) return { error: "Add the name of the gym or venue." };
 
-  const { error } = await getSupabase().from("workouts").insert({
+  const { error } = await getSupabase().from("gogym_workouts").insert({
     challenge_id: challengeId,
     participant_id: participantId,
     media_url: mediaUrl,

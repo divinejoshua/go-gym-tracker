@@ -65,48 +65,48 @@ export type FeedWorkout = Workout & {
  * Minimal hand-written schema so Supabase queries are type-checked.
  * `Relationships` is required by the client's generic constraint — leaving it
  * out silently collapses every table type to `never`. It also teaches the
- * client how `workouts` embeds `participants(name)` and `challenges(name)`.
+ * client how `gogym_workouts` embeds the other two tables.
  */
 export type Database = {
   public: {
     Tables: {
-      challenges: {
+      gogym_challenges: {
         Row: Challenge;
         Insert: Omit<Challenge, "id" | "created_at">;
         Update: Partial<Omit<Challenge, "id" | "created_at">>;
         Relationships: [];
       };
-      participants: {
+      gogym_participants: {
         Row: Participant;
         Insert: Omit<Participant, "id" | "created_at">;
         Update: Partial<Omit<Participant, "id" | "created_at">>;
         Relationships: [
           {
-            foreignKeyName: "participants_challenge_id_fkey";
+            foreignKeyName: "gogym_participants_challenge_id_fkey";
             columns: ["challenge_id"];
             isOneToOne: false;
-            referencedRelation: "challenges";
+            referencedRelation: "gogym_challenges";
             referencedColumns: ["id"];
           },
         ];
       };
-      workouts: {
+      gogym_workouts: {
         Row: Workout;
         Insert: Omit<Workout, "id" | "created_at">;
         Update: Partial<Omit<Workout, "id" | "created_at">>;
         Relationships: [
           {
-            foreignKeyName: "workouts_challenge_id_fkey";
+            foreignKeyName: "gogym_workouts_challenge_id_fkey";
             columns: ["challenge_id"];
             isOneToOne: false;
-            referencedRelation: "challenges";
+            referencedRelation: "gogym_challenges";
             referencedColumns: ["id"];
           },
           {
-            foreignKeyName: "workouts_participant_id_fkey";
+            foreignKeyName: "gogym_workouts_participant_id_fkey";
             columns: ["participant_id"];
             isOneToOne: false;
-            referencedRelation: "participants";
+            referencedRelation: "gogym_participants";
             referencedColumns: ["id"];
           },
         ];
