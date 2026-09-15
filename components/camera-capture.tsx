@@ -1,6 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 
 type Mode = "photo" | "video";
 type Status = "idle" | "starting" | "live" | "recording" | "captured" | "error";
@@ -46,6 +52,21 @@ export function CameraCapture({
     streamRef.current?.getTracks().forEach((track) => track.stop());
     streamRef.current = null;
   }, []);
+
+  /*
+   * Browsers only expose the camera in a secure context: https, localhost, or
+   * file://. Opened over http://<lan-ip>:3000 on a phone, navigator.mediaDevices
+   * is undefined and no permission prompt will ever appear, so say so up front
+   * rather than leaving a dead panel behind a button that cannot work.
+   *
+   * Read through useSyncExternalStore rather than an effect: the server has no
+   * `window`, and the `false` server snapshot keeps hydration consistent.
+   */
+  const insecureContext = useSyncExternalStore(
+    () => () => {},
+    () => !window.isSecureContext,
+    () => false,
+  );
 
   const start = useCallback(
     async (
@@ -264,16 +285,20 @@ export function CameraCapture({
               />
             </svg>
             <p className="max-w-xs text-sm text-white/70">
-              {error ??
-                "Proof has to be live. Open the camera and capture it here — you can't upload an old photo."}
+              {insecureContext
+                ? "Browsers only allow camera access over https. Restart the server with `npm run dev:https` and open the https:// address on this phone."
+                : (error ??
+                  "Proof has to be live. Open the camera and capture it here — you can't upload an old photo.")}
             </p>
-            <button
-              type="button"
-              onClick={() => void start()}
-              className="rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition hover:brightness-95 active:scale-95"
-            >
-              {status === "error" ? "Try again" : "Open camera"}
-            </button>
+            {insecureContext ? null : (
+              <button
+                type="button"
+                onClick={() => void start()}
+                className="rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition hover:brightness-95 active:scale-95"
+              >
+                {status === "error" ? "Try again" : "Open camera"}
+              </button>
+            )}
           </div>
         ) : null}
 
