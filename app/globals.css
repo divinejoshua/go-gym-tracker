@@ -1,26 +1,58 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/*
+  Go Gym or Go Broke — a deliberately dark, single-theme app.
+  Lime = you showed up. Red = you owe the group money.
+*/
+@theme {
+  --color-ink: #08090b;
+  --color-surface: #121418;
+  --color-surface-2: #1a1d23;
+  --color-line: #262a32;
+  --color-muted: #8b93a1;
+  --color-lime: #ccff33;
+  --color-lime-dim: #93b81f;
+  --color-broke: #ff4d5e;
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  color-scheme: dark;
+  background-color: var(--color-ink);
+  /* Stop iOS from bumping font sizes when the phone rotates. */
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-ink);
+  color: #f3f5f7;
+  font-family: var(--font-sans);
+  /* Never let a stray wide element sideways-scroll the whole page on mobile. */
+  overflow-x: hidden;
+}
+
+/* Respect the iPhone home indicator under the fixed bottom nav. */
+.pb-safe {
+  padding-bottom: calc(0.5rem + env(safe-area-inset-bottom));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Native form controls default to a light palette on iOS without this. */
+input,
+select,
+textarea,
+button {
+  font: inherit;
+  color-scheme: dark;
 }
