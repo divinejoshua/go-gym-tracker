@@ -32,7 +32,7 @@ export default async function HomePage({ searchParams }: PageProps<"/">) {
       />
 
       {posted ? (
-        <p className="mb-5 rounded-xl border border-lime/30 bg-lime/10 px-4 py-3 text-sm font-medium text-lime">
+        <p className="mb-5 rounded-xl border border-primary/30 bg-primary/10 px-4 py-3 text-sm font-medium text-primary-foreground">
           Logged it. That one is in the books 💪
         </p>
       ) : null}
@@ -48,7 +48,7 @@ export default async function HomePage({ searchParams }: PageProps<"/">) {
           {days.map((day) => (
             <section key={day.key}>
               {/* Sticky so you always know which day you're scrolling through. */}
-              <h2 className="sticky top-0 z-10 -mx-4 mb-3 bg-ink/95 px-4 py-2 text-xs font-bold uppercase tracking-widest text-muted backdrop-blur sm:-mx-6 sm:px-6">
+              <h2 className="sticky top-0 z-10 -mx-4 mb-3 bg-background/90 px-4 py-2 text-xs font-bold uppercase tracking-widest text-muted-foreground backdrop-blur sm:-mx-6 sm:px-6">
                 {day.label}
               </h2>
               <div className="space-y-4">

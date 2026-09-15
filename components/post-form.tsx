@@ -3,12 +3,13 @@
 import { useMemo, useState, useTransition } from "react";
 
 import { CameraCapture, type Capture } from "@/components/camera-capture";
+import { ErrorBanner, primaryButtonClass } from "@/components/ui";
 import { logWorkout } from "@/app/actions";
 import { uploadProof } from "@/lib/upload";
 import { DURATIONS, WORKOUT_TYPES, type Challenge, type Participant } from "@/lib/types";
 
 const fieldClass =
-  "w-full rounded-xl border border-line bg-surface px-4 py-3 text-base outline-none transition focus:border-lime/60";
+  "w-full rounded-lg border border-border bg-input px-4 py-3 text-base outline-none transition focus:border-ring focus:ring-2 focus:ring-ring/30";
 
 const labelClass = "mb-2 block text-sm font-semibold";
 
@@ -120,7 +121,7 @@ export function PostForm({
           {WORKOUT_TYPES.map((type, index) => (
             <label
               key={type.value}
-              className="flex cursor-pointer items-center gap-2 rounded-xl border border-line bg-surface px-4 py-3 text-sm font-medium transition has-checked:border-lime has-checked:bg-lime/10 has-checked:text-lime"
+              className="flex cursor-pointer items-center gap-2 rounded-lg border border-border bg-card px-4 py-3 text-sm font-medium transition has-checked:border-primary has-checked:bg-primary/10 has-checked:text-primary-foreground"
             >
               <input
                 type="radio"
@@ -143,7 +144,7 @@ export function PostForm({
           {DURATIONS.map((duration, index) => (
             <label
               key={duration.value}
-              className="cursor-pointer rounded-full border border-line bg-surface px-4 py-2.5 text-sm font-medium transition has-checked:border-lime has-checked:bg-lime/10 has-checked:text-lime"
+              className="cursor-pointer rounded-full border border-border bg-card px-4 py-2.5 text-sm font-medium transition has-checked:border-primary has-checked:bg-primary/10 has-checked:text-primary-foreground"
             >
               <input
                 type="radio"
@@ -187,18 +188,13 @@ export function PostForm({
       </div>
 
       {error ? (
-        <p
-          role="alert"
-          className="rounded-xl border border-broke/40 bg-broke/10 px-4 py-3 text-sm text-broke"
-        >
-          {error}
-        </p>
+        <ErrorBanner>{error}</ErrorBanner>
       ) : null}
 
       <button
         type="submit"
         disabled={busy}
-        className="w-full rounded-xl bg-lime py-4 text-base font-bold text-ink transition active:scale-[0.99] disabled:opacity-50"
+        className={`${primaryButtonClass} w-full py-4 text-base`}
       >
         {uploading ? "Uploading proof…" : pending ? "Saving…" : "Log this workout"}
       </button>

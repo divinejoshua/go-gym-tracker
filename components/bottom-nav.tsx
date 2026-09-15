@@ -18,7 +18,7 @@ export function BottomNav() {
     href === "/" ? pathname === "/" : pathname.startsWith(href);
 
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-ink/95 backdrop-blur pb-safe">
+    <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/90 backdrop-blur pb-safe">
       <ul className="mx-auto flex w-full max-w-2xl items-end justify-around px-2 pt-2">
         {TABS.map((tab) => {
           const active = isActive(tab.href);
@@ -30,7 +30,7 @@ export function BottomNav() {
                   href={tab.href}
                   aria-label="Post proof of a workout"
                   aria-current={active ? "page" : undefined}
-                  className="mx-auto flex h-13 w-13 -translate-y-3 items-center justify-center rounded-full bg-lime text-ink shadow-lg shadow-lime/20 transition active:scale-95"
+                  className="mx-auto flex h-13 w-13 -translate-y-3 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition hover:brightness-95 active:scale-95"
                 >
                   <svg viewBox="0 0 24 24" className="h-7 w-7" aria-hidden="true">
                     <path
@@ -48,8 +48,10 @@ export function BottomNav() {
               <Link
                 href={tab.href}
                 aria-current={active ? "page" : undefined}
-                className={`flex flex-col items-center gap-1 rounded-lg py-1.5 text-[11px] font-medium transition ${
-                  active ? "text-lime" : "text-muted hover:text-white"
+                className={`flex flex-col items-center gap-1 rounded-md py-1.5 text-[11px] font-medium transition ${
+                  active
+                    ? "text-primary-foreground"
+                    : "text-muted-foreground hover:text-foreground"
                 }`}
               >
                 <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden="true">

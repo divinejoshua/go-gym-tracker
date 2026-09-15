@@ -9,7 +9,7 @@ import type { ParticipantWeek } from "@/lib/queries";
 export function ProgressList({ rows }: { rows: ParticipantWeek[] }) {
   if (rows.length === 0) {
     return (
-      <Card className="px-6 py-10 text-center text-sm text-muted">
+      <Card className="px-6 py-10 text-center text-sm text-muted-foreground">
         Nobody has been added to this challenge yet.
       </Card>
     );
@@ -30,17 +30,19 @@ export function ProgressList({ rows }: { rows: ParticipantWeek[] }) {
                 <div className="flex items-baseline justify-between gap-2">
                   <p className="truncate font-semibold">
                     {participant.name}{" "}
-                    <span className={hit ? "text-lime" : "text-muted"}>
+                    <span
+                      className={hit ? "text-primary-foreground" : "text-destructive"}
+                    >
                       ({done}/{target})
                     </span>
                   </p>
-                  <span className="shrink-0 text-xs font-medium text-muted">
+                  <span className="shrink-0 text-xs font-medium text-muted-foreground">
                     {hit ? "Safe ✅" : `${target - done} to go`}
                   </span>
                 </div>
 
                 <div
-                  className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-surface-2"
+                  className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-muted"
                   role="progressbar"
                   aria-valuenow={done}
                   aria-valuemin={0}
@@ -49,7 +51,7 @@ export function ProgressList({ rows }: { rows: ParticipantWeek[] }) {
                 >
                   <div
                     className={`h-full rounded-full transition-all ${
-                      hit ? "bg-lime" : "bg-broke"
+                      hit ? "bg-primary" : "bg-destructive"
                     }`}
                     style={{ width: `${percent}%` }}
                   />

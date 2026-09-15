@@ -1,5 +1,7 @@
 "use client";
 
+import { ErrorBanner, primaryButtonClass } from "@/components/ui";
+
 export default function Error({
   error,
   reset,
@@ -8,13 +10,13 @@ export default function Error({
   reset: () => void;
 }) {
   return (
-    <div className="rounded-2xl border border-broke/40 bg-broke/10 px-6 py-10 text-center">
-      <h1 className="text-lg font-bold text-broke">Something went wrong</h1>
-      <p className="mx-auto mt-2 max-w-sm text-sm text-muted">{error.message}</p>
+    <div className="py-6">
+      <h1 className="mb-3 text-2xl font-bold tracking-tight">Something went wrong</h1>
+      <ErrorBanner>{error.message}</ErrorBanner>
       <button
         type="button"
         onClick={reset}
-        className="mt-5 rounded-full bg-lime px-5 py-2.5 text-sm font-semibold text-ink"
+        className={`${primaryButtonClass} mt-5 px-5 py-2.5 text-sm`}
       >
         Try again
       </button>

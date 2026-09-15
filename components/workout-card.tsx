@@ -20,18 +20,19 @@ export function WorkoutCard({
         <Avatar name={workout.participant_name} />
         <div className="min-w-0 flex-1">
           <p className="truncate font-semibold">{workout.participant_name}</p>
-          <p className="truncate text-xs text-muted">
+          <p className="truncate text-xs text-muted-foreground">
             <time dateTime={workout.created_at}>{timeLabel(postedAt)}</time>
             {workout.venue ? <> · {workout.venue}</> : null}
           </p>
         </div>
-        <Pill tone="lime">
+        <Pill tone="primary">
           <span aria-hidden="true">{type.emoji}</span>
           {type.label}
         </Pill>
       </div>
 
-      <div className="relative aspect-4/5 w-full bg-ink sm:aspect-square">
+      {/* Dark stage so photos and video letterbox cleanly on a white page. */}
+      <div className="relative aspect-4/5 w-full bg-foreground sm:aspect-square">
         {workout.media_type === "video" ? (
           <video
             src={workout.media_url}
@@ -58,7 +59,7 @@ export function WorkoutCard({
         </div>
 
         {workout.routine ? (
-          <p className="whitespace-pre-wrap text-sm leading-relaxed text-white/85">
+          <p className="whitespace-pre-wrap text-sm leading-relaxed text-foreground/85">
             {workout.routine}
           </p>
         ) : null}
@@ -89,7 +90,7 @@ export function Avatar({
   return (
     <span
       aria-hidden="true"
-      className={`flex shrink-0 items-center justify-center rounded-full bg-surface-2 font-bold text-lime ring-1 ring-line ${sizes[size]}`}
+      className={`flex shrink-0 items-center justify-center rounded-full bg-primary font-bold text-primary-foreground ${sizes[size]}`}
     >
       {initials}
     </span>

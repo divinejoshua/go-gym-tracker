@@ -75,8 +75,8 @@ export default async function ProgressPage({ searchParams }: PageProps<"/progres
                 href={`/progress?challenge=${option.id}`}
                 className={`whitespace-nowrap rounded-full border px-4 py-2 text-sm font-medium transition ${
                   option.id === challenge.id
-                    ? "border-lime bg-lime/10 text-lime"
-                    : "border-line bg-surface text-muted"
+                    ? "border-primary bg-primary/10 text-primary-foreground"
+                    : "border-border bg-card text-muted-foreground"
                 }`}
               >
                 {option.name}
@@ -97,9 +97,9 @@ export default async function ProgressPage({ searchParams }: PageProps<"/progres
         <div className="text-center">
           <p className="text-sm font-bold">
             Week {weekIndex + 1}{" "}
-            <span className="font-normal text-muted">of {weeks}</span>
+            <span className="font-normal text-muted-foreground">of {weeks}</span>
           </p>
-          <p className="text-xs text-muted">
+          <p className="text-xs text-muted-foreground">
             {shortDate(start)} – {shortDate(new Date(end.getTime() - 1))}
             {weekIndex === thisWeek ? " · now" : ""}
           </p>
@@ -115,7 +115,7 @@ export default async function ProgressPage({ searchParams }: PageProps<"/progres
 
       <ProgressList rows={progress} />
 
-      <p className="mt-4 text-center text-xs text-muted">
+      <p className="mt-4 text-center text-xs text-muted-foreground">
         Target is {challenge.workouts_per_week} workout
         {challenge.workouts_per_week === 1 ? "" : "s"} a week, from{" "}
         {shortDate(parseDateOnly(challenge.start_date))} to{" "}
@@ -140,7 +140,7 @@ function WeekArrow({
     return (
       <span
         aria-hidden="true"
-        className="flex h-10 w-10 items-center justify-center rounded-lg text-muted opacity-30"
+        className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground opacity-30"
       >
         {glyph}
       </span>
@@ -151,7 +151,7 @@ function WeekArrow({
     <Link
       href={href}
       aria-label={label}
-      className="flex h-10 w-10 items-center justify-center rounded-lg text-muted transition hover:bg-surface-2 hover:text-white"
+      className="flex h-10 w-10 items-center justify-center rounded-lg text-muted-foreground transition hover:bg-muted hover:text-foreground"
     >
       {glyph}
     </Link>

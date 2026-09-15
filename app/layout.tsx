@@ -1,11 +1,12 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Outfit } from "next/font/google";
 
 import { BottomNav } from "@/components/bottom-nav";
 import "./globals.css";
 
-const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
-const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
+// The design system asks for Outfit. Loading it through next/font self-hosts the
+// files and exposes them as --font-outfit, which globals.css feeds to --font-sans.
+const outfit = Outfit({ variable: "--font-outfit", subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Go Gym or Go Broke",
@@ -13,18 +14,15 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#08090b",
+  themeColor: "#ffffff",
   // The camera screen is full-bleed; keep it out from under the notch.
   viewportFit: "cover",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full">
+    <html lang="en" className={`${outfit.variable} h-full antialiased`}>
+      <body className="min-h-full font-sans">
         {/* pb-28 keeps the last card clear of the fixed bottom nav. */}
         <div className="mx-auto w-full max-w-2xl px-4 pb-28 pt-5 sm:px-6">
           {children}

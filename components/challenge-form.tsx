@@ -3,9 +3,10 @@
 import { useActionState, useState } from "react";
 
 import { createChallenge, emptyFormState } from "@/app/actions";
+import { ErrorBanner, primaryButtonClass } from "@/components/ui";
 
 const fieldClass =
-  "w-full rounded-xl border border-line bg-surface px-4 py-3 text-base outline-none transition focus:border-lime/60";
+  "w-full rounded-lg border border-border bg-input px-4 py-3 text-base outline-none transition focus:border-ring focus:ring-2 focus:ring-ring/30";
 
 const labelClass = "mb-2 block text-sm font-semibold";
 
@@ -64,7 +65,7 @@ export function ChallengeForm() {
           className={fieldClass}
           required
         />
-        <p className="mt-2 text-xs text-muted">
+        <p className="mt-2 text-xs text-muted-foreground">
           Miss the target in a week and you go broke.
         </p>
       </div>
@@ -115,7 +116,7 @@ export function ChallengeForm() {
                 onClick={() => removeRow(id)}
                 aria-label={`Remove participant ${index + 1}`}
                 disabled={rows.length === 1}
-                className="shrink-0 rounded-xl border border-line bg-surface px-4 text-muted transition hover:text-broke disabled:opacity-30"
+                className="shrink-0 rounded-xl border border-border bg-card px-4 text-muted-foreground transition hover:text-destructive disabled:opacity-30"
               >
                 ✕
               </button>
@@ -125,7 +126,7 @@ export function ChallengeForm() {
         <button
           type="button"
           onClick={addRow}
-          className="mt-2 rounded-xl border border-dashed border-line px-4 py-2.5 text-sm font-medium text-muted transition hover:border-lime/50 hover:text-lime"
+          className="mt-2 rounded-xl border border-dashed border-border px-4 py-2.5 text-sm font-medium text-muted-foreground transition hover:border-primary/50 hover:text-primary-foreground"
         >
           + Add another person
         </button>
@@ -147,18 +148,13 @@ export function ChallengeForm() {
       </div>
 
       {state.error ? (
-        <p
-          role="alert"
-          className="rounded-xl border border-broke/40 bg-broke/10 px-4 py-3 text-sm text-broke"
-        >
-          {state.error}
-        </p>
+        <ErrorBanner>{state.error}</ErrorBanner>
       ) : null}
 
       <button
         type="submit"
         disabled={pending}
-        className="w-full rounded-xl bg-lime py-4 text-base font-bold text-ink transition active:scale-[0.99] disabled:opacity-50"
+        className={`${primaryButtonClass} w-full py-4 text-base`}
       >
         {pending ? "Creating…" : "Create challenge"}
       </button>

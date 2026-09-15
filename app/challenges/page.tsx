@@ -1,6 +1,13 @@
 import Link from "next/link";
 
-import { Card, EmptyState, PageHeader, Pill, SetupNotice } from "@/components/ui";
+import {
+  Card,
+  EmptyState,
+  PageHeader,
+  Pill,
+  SetupNotice,
+  primaryButtonClass,
+} from "@/components/ui";
 import { challengeStatus, parseDateOnly, shortDate, totalWeeks } from "@/lib/dates";
 import { getAllParticipants, getChallenges } from "@/lib/queries";
 import { isSupabaseConfigured } from "@/lib/supabase";
@@ -8,9 +15,9 @@ import { isSupabaseConfigured } from "@/lib/supabase";
 export const dynamic = "force-dynamic";
 
 const STATUS_TONE = {
-  active: "lime",
+  active: "primary",
   upcoming: "neutral",
-  finished: "broke",
+  finished: "destructive",
 } as const;
 
 const STATUS_LABEL = {
@@ -47,7 +54,7 @@ export default async function ChallengesPage() {
         action={
           <Link
             href="/admin"
-            className="shrink-0 rounded-full bg-lime px-4 py-2 text-sm font-semibold text-ink transition active:scale-95"
+            className={`${primaryButtonClass} shrink-0 px-4 py-2 text-sm`}
           >
             New
           </Link>
@@ -74,7 +81,7 @@ export default async function ChallengesPage() {
                     <Pill tone={STATUS_TONE[status]}>{STATUS_LABEL[status]}</Pill>
                   </div>
 
-                  <p className="mt-1 text-sm text-muted">
+                  <p className="mt-1 text-sm text-muted-foreground">
                     {shortDate(parseDateOnly(challenge.start_date))} –{" "}
                     {shortDate(parseDateOnly(challenge.end_date))}
                   </p>

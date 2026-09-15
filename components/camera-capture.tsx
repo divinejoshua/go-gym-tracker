@@ -221,7 +221,7 @@ export function CameraCapture({
 
   return (
     <div className="space-y-3">
-      <div className="relative aspect-4/5 w-full overflow-hidden rounded-2xl border border-line bg-ink">
+      <div className="relative aspect-4/5 w-full overflow-hidden rounded-xl border border-border bg-neutral-900">
         {/* Live preview. Kept mounted so the stream has somewhere to render. */}
         <video
           ref={videoRef}
@@ -253,20 +253,20 @@ export function CameraCapture({
 
         {status === "idle" || status === "error" ? (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 p-6 text-center">
-            <svg viewBox="0 0 24 24" className="h-12 w-12 text-muted" aria-hidden="true">
+            <svg viewBox="0 0 24 24" className="h-12 w-12 text-white/50" aria-hidden="true">
               <path
                 fill="currentColor"
                 d="M9 3 7.2 5H4a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-3.2L15 3zm3 5.5a5 5 0 1 1 0 10 5 5 0 0 1 0-10m0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6"
               />
             </svg>
-            <p className="max-w-xs text-sm text-muted">
+            <p className="max-w-xs text-sm text-white/70">
               {error ??
                 "Proof has to be live. Open the camera and capture it here — you can't upload an old photo."}
             </p>
             <button
               type="button"
               onClick={() => void start()}
-              className="rounded-full bg-lime px-5 py-2.5 text-sm font-semibold text-ink transition active:scale-95"
+              className="rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition hover:brightness-95 active:scale-95"
             >
               {status === "error" ? "Try again" : "Open camera"}
             </button>
@@ -274,14 +274,14 @@ export function CameraCapture({
         ) : null}
 
         {status === "starting" ? (
-          <div className="absolute inset-0 flex items-center justify-center bg-ink/70 text-sm text-muted">
+          <div className="absolute inset-0 flex items-center justify-center bg-neutral-900/70 text-sm text-white/70">
             Starting camera…
           </div>
         ) : null}
 
         {status === "recording" ? (
-          <div className="absolute left-3 top-3 flex items-center gap-2 rounded-full bg-broke px-3 py-1.5 text-xs font-bold text-white">
-            <span className="h-2 w-2 animate-pulse rounded-full bg-white" />
+          <div className="absolute left-3 top-3 flex items-center gap-2 rounded-full bg-destructive px-3 py-1.5 text-xs font-bold text-destructive-foreground">
+            <span className="h-2 w-2 animate-pulse rounded-full bg-destructive-foreground" />
             {seconds}s / {MAX_VIDEO_SECONDS}s
           </div>
         ) : null}
@@ -292,7 +292,7 @@ export function CameraCapture({
             onClick={flipCamera}
             aria-label="Switch camera"
             disabled={status === "recording"}
-            className="absolute right-3 top-3 rounded-full bg-ink/70 p-2.5 text-white backdrop-blur transition active:scale-95 disabled:opacity-40"
+            className="absolute right-3 top-3 rounded-full bg-neutral-900/60 p-2.5 text-white backdrop-blur transition active:scale-95 disabled:opacity-40"
           >
             <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden="true">
               <path
@@ -306,7 +306,7 @@ export function CameraCapture({
 
       {status === "live" || status === "recording" ? (
         <>
-          <div className="flex justify-center gap-1 rounded-full border border-line bg-surface p-1">
+          <div className="flex justify-center gap-1 rounded-full border border-border bg-card p-1">
             {(["photo", "video"] as const).map((option) => (
               <button
                 key={option}
@@ -314,7 +314,7 @@ export function CameraCapture({
                 onClick={() => switchMode(option)}
                 disabled={status === "recording"}
                 className={`flex-1 rounded-full py-2 text-sm font-semibold capitalize transition disabled:opacity-40 ${
-                  mode === option ? "bg-lime text-ink" : "text-muted"
+                  mode === option ? "bg-primary text-primary-foreground" : "text-muted-foreground"
                 }`}
               >
                 {option}
@@ -328,17 +328,17 @@ export function CameraCapture({
                 type="button"
                 onClick={takePhoto}
                 aria-label="Take photo"
-                className="h-18 w-18 rounded-full border-4 border-lime bg-lime/20 transition active:scale-90"
+                className="h-18 w-18 rounded-full border-4 border-primary bg-primary/20 transition active:scale-90"
               />
             ) : (
               <button
                 type="button"
                 onClick={status === "recording" ? stopRecording : startRecording}
                 aria-label={status === "recording" ? "Stop recording" : "Start recording"}
-                className="flex h-18 w-18 items-center justify-center rounded-full border-4 border-broke transition active:scale-90"
+                className="flex h-18 w-18 items-center justify-center rounded-full border-4 border-destructive transition active:scale-90"
               >
                 <span
-                  className={`bg-broke transition-all ${
+                  className={`bg-destructive transition-all ${
                     status === "recording" ? "h-6 w-6 rounded" : "h-12 w-12 rounded-full"
                   }`}
                 />
@@ -352,7 +352,7 @@ export function CameraCapture({
         <button
           type="button"
           onClick={retake}
-          className="w-full rounded-xl border border-line bg-surface py-3 text-sm font-semibold transition active:scale-[0.99]"
+          className="w-full rounded-lg border border-border bg-card py-3 text-sm font-semibold shadow-xs transition hover:bg-muted active:scale-[0.99]"
         >
           Retake
         </button>

@@ -22,7 +22,11 @@ import { isSupabaseConfigured } from "@/lib/supabase";
 
 export const dynamic = "force-dynamic";
 
-const STATUS_TONE = { active: "lime", upcoming: "neutral", finished: "broke" } as const;
+const STATUS_TONE = {
+  active: "primary",
+  upcoming: "neutral",
+  finished: "destructive",
+} as const;
 const STATUS_LABEL = {
   active: "Active",
   upcoming: "Not started",
@@ -52,7 +56,7 @@ export default async function ChallengePage({ params }: PageProps<"/challenges/[
     <>
       <Link
         href="/challenges"
-        className="mb-3 inline-flex items-center gap-1 text-sm text-muted transition hover:text-white"
+        className="mb-3 inline-flex items-center gap-1 text-sm text-muted-foreground transition hover:text-foreground"
       >
         ← All challenges
       </Link>
@@ -78,10 +82,10 @@ export default async function ChallengePage({ params }: PageProps<"/challenges/[
 
       {challenge.rules ? (
         <section className="mb-8">
-          <h2 className="mb-2 text-xs font-bold uppercase tracking-widest text-muted">
+          <h2 className="mb-2 text-xs font-bold uppercase tracking-widest text-muted-foreground">
             Rules
           </h2>
-          <Card className="whitespace-pre-wrap px-4 py-4 text-sm leading-relaxed text-white/85">
+          <Card className="whitespace-pre-wrap px-4 py-4 text-sm leading-relaxed text-foreground/85">
             {challenge.rules}
           </Card>
         </section>
@@ -89,36 +93,36 @@ export default async function ChallengePage({ params }: PageProps<"/challenges/[
 
       <section className="mb-8">
         <div className="mb-3 flex items-baseline justify-between gap-3">
-          <h2 className="text-xs font-bold uppercase tracking-widest text-muted">
+          <h2 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
             Week {weekIndex + 1} of {weeks}
           </h2>
-          <span className="text-xs text-muted">
+          <span className="text-xs text-muted-foreground">
             {shortDate(start)} – {shortDate(new Date(end.getTime() - 1))}
           </span>
         </div>
         <ProgressList rows={progress} />
         <Link
           href={`/progress?challenge=${challenge.id}`}
-          className="mt-3 inline-block text-sm font-medium text-lime"
+          className="mt-3 inline-block text-sm font-medium text-primary-foreground"
         >
           See every week →
         </Link>
       </section>
 
       <section>
-        <h2 className="mb-3 text-xs font-bold uppercase tracking-widest text-muted">
+        <h2 className="mb-3 text-xs font-bold uppercase tracking-widest text-muted-foreground">
           Recent proof
         </h2>
 
         {days.length === 0 ? (
-          <Card className="px-6 py-10 text-center text-sm text-muted">
+          <Card className="px-6 py-10 text-center text-sm text-muted-foreground">
             No workouts logged in this challenge yet.
           </Card>
         ) : (
           <div className="space-y-8">
             {days.map((day) => (
               <div key={day.key}>
-                <h3 className="mb-3 text-xs font-bold uppercase tracking-widest text-muted">
+                <h3 className="mb-3 text-xs font-bold uppercase tracking-widest text-muted-foreground">
                   {day.label}
                 </h3>
                 <div className="space-y-4">
