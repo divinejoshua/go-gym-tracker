@@ -22,7 +22,7 @@ const TABS = [
   },
   {
     href: "/admin",
-    label: "Admin",
+    label: "New challenge",
     icon: "M12 2 4 6v6c0 4.4 3.4 8.6 8 10 4.6-1.4 8-5.6 8-10V6zm0 5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5m0 6c2 0 4 1 4 2.3V16H8v-.7c0-1.3 2-2.3 4-2.3",
   },
 ];
