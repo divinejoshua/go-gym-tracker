@@ -31,30 +31,40 @@ export function WorkoutCard({
         </Pill>
       </div>
 
-      {/* Dark stage so photos and video letterbox cleanly on a white page. */}
-      <div className="relative aspect-4/5 w-full bg-foreground sm:aspect-square">
-        {workout.media_type === "video" ? (
-          <video
-            src={workout.media_url}
-            controls
-            playsInline
-            preload="metadata"
-            className="h-full w-full object-cover"
-          />
-        ) : (
-          <Image
-            src={workout.media_url}
-            alt={`${workout.participant_name}'s ${type.label.toLowerCase()} proof`}
-            fill
-            sizes="(max-width: 640px) 100vw, 640px"
-            className="object-cover"
-          />
-        )}
-      </div>
+      {workout.media_url ? (
+        /* Dark stage so photos and video letterbox cleanly on a white page. */
+        <div className="relative aspect-4/5 w-full bg-foreground sm:aspect-square">
+          {workout.media_type === "video" ? (
+            <video
+              src={workout.media_url}
+              controls
+              playsInline
+              preload="metadata"
+              className="h-full w-full object-cover"
+            />
+          ) : (
+            <Image
+              src={workout.media_url}
+              alt={`${workout.participant_name}'s ${type.label.toLowerCase()} proof`}
+              fill
+              sizes="(max-width: 640px) 100vw, 640px"
+              className="object-cover"
+            />
+          )}
+        </div>
+      ) : (
+        /* Backfilled workout. Nothing was captured at the time, so keep the
+           placeholder small rather than reserving the full-bleed stage for it. */
+        <div className="px-4 pt-1">
+          <div className="flex h-20 w-32 items-center justify-center rounded-md border border-dashed border-border bg-muted px-2 text-center text-xs font-medium text-muted-foreground">
+            No image available
+          </div>
+        </div>
+      )}
 
       <div className="space-y-3 px-4 py-3">
         <div className="flex flex-wrap gap-2">
-          <Pill>⏱ {durationLabel(workout.duration)}</Pill>
+          {workout.duration ? <Pill>⏱ {durationLabel(workout.duration)}</Pill> : null}
           {showChallenge ? <Pill>🏆 {workout.challenge_name}</Pill> : null}
         </div>
 

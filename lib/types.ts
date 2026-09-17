@@ -46,10 +46,12 @@ export type Workout = {
   id: string;
   challenge_id: string;
   participant_id: string;
-  media_url: string;
-  media_type: MediaType;
+  /** Null on a backfilled workout — it happened before anyone was posting proof. */
+  media_url: string | null;
+  media_type: MediaType | null;
   workout_type: WorkoutType;
-  duration: Duration;
+  /** Null when a past workout was logged and nobody remembered how long it took. */
+  duration: Duration | null;
   routine: string;
   venue: string;
   created_at: string;

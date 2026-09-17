@@ -30,17 +30,24 @@ create table if not exists gogym_participants (
   unique (challenge_id, name)
 );
 
+-- media_url/media_type/duration are nullable so workouts that happened before
+-- the app existed can be backfilled: no photo, no remembered venue or length.
+-- Live posts through /post always fill them in.
 create table if not exists gogym_workouts (
   id             uuid        primary key default gen_random_uuid(),
   challenge_id   uuid        not null references gogym_challenges(id) on delete cascade,
   participant_id uuid        not null references gogym_participants(id) on delete cascade,
-  media_url      text        not null,
-  media_type     text        not null check (media_type in ('image', 'video')),
+  media_url      text,
+  media_type     text        check (media_type in ('image', 'video')),
   workout_type   text        not null check (workout_type in ('upper_body', 'leg_day', 'cardio', 'other')),
-  duration       text        not null check (duration in ('30m', '45m', '1h', '2h', '3h+')),
+  duration       text        check (duration in ('30m', '45m', '1h', '2h', '3h+')),
   routine        text        not null default '',
   venue          text        not null default '',
-  created_at     timestamptz not null default now()
+  created_at     timestamptz not null default now(),
+  -- A row carries both halves of its proof or neither, never a URL with no
+  -- type to tell the card whether to render a <video> or an <Image>.
+  constraint gogym_workouts_proof_paired
+    check ((media_url is null) = (media_type is null))
 );
 
 -- ---------------------------------------------------------------
