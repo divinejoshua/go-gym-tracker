@@ -9,16 +9,17 @@ const TABS = [
     label: "Feed",
     icon: "M3 10.2 12 3l9 7.2V20a1 1 0 0 1-1 1h-5.5v-6h-5v6H4a1 1 0 0 1-1-1z",
   },
-  {
-    href: "/challenges",
-    label: "Challenges",
-    icon: "M7 4h10v3a5 5 0 0 1-10 0zM5 5h2v2a3 3 0 0 1-2-2m12 0h2a3 3 0 0 1-2 2zM9 13h6v2H9zm-2 4h10v3H7z",
-  },
-  { href: "/post", label: "Post", icon: "", primary: true },
-  {
+    {
     href: "/progress",
     label: "Progress",
     icon: "M4 13h3v7H4zM10.5 8h3v12h-3zM17 4h3v16h-3z",
+  },
+  
+  { href: "/post", label: "Post", icon: "", primary: true },
+{
+    href: "/challenges",
+    label: "Challenges",
+    icon: "M7 4h10v3a5 5 0 0 1-10 0zM5 5h2v2a3 3 0 0 1-2-2m12 0h2a3 3 0 0 1-2 2zM9 13h6v2H9zm-2 4h10v3H7z",
   },
   {
     href: "/admin",
