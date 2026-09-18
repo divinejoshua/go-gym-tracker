@@ -9,9 +9,10 @@ const VISIBLE_RATIO = 0.6;
  * Feed video that plays itself while it is on screen and loops until you
  * scroll past it.
  *
- * Muted is not a style choice: every browser blocks unprompted playback with
- * sound, and a rejected play() would leave a frozen first frame. The controls
- * stay so anyone who wants the gym-floor audio can unmute.
+ * No controls — the clip is proof you glance at, not something you scrub. That
+ * makes muted mandatory rather than merely polite: every browser blocks
+ * unprompted playback with sound, and a rejected play() would leave a frozen
+ * first frame with no play button to rescue it.
  */
 export function FeedVideo({ src }: { src: string }) {
   const ref = useRef<HTMLVideoElement>(null);
@@ -48,7 +49,6 @@ export function FeedVideo({ src }: { src: string }) {
     <video
       ref={ref}
       src={src}
-      controls
       loop
       muted
       playsInline
