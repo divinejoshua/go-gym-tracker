@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Outfit } from "next/font/google";
 
+import { Analytics } from "@/components/analytics";
 import { BottomNav } from "@/components/bottom-nav";
 import { ServiceWorker } from "@/components/service-worker";
 import "./globals.css";
@@ -44,6 +45,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         </div>
         <BottomNav />
         <ServiceWorker />
+        <Analytics />
       </body>
     </html>
   );
