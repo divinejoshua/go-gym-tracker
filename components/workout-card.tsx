@@ -1,5 +1,6 @@
 import Image from "next/image";
 
+import { FeedVideo } from "@/components/feed-video";
 import { Card, Pill } from "@/components/ui";
 import { timeLabel } from "@/lib/dates";
 import { durationLabel, workoutTypeLabel, type FeedWorkout } from "@/lib/types";
@@ -35,13 +36,7 @@ export function WorkoutCard({
         /* Dark stage so photos and video letterbox cleanly on a white page. */
         <div className="relative aspect-4/5 w-full bg-foreground sm:aspect-square">
           {workout.media_type === "video" ? (
-            <video
-              src={workout.media_url}
-              controls
-              playsInline
-              preload="metadata"
-              className="h-full w-full object-cover"
-            />
+            <FeedVideo src={workout.media_url} />
           ) : (
             <Image
               src={workout.media_url}
