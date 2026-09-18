@@ -50,7 +50,7 @@ export function WorkoutCard({
         /* Backfilled workout. Nothing was captured at the time, so keep the
            placeholder small rather than reserving the full-bleed stage for it. */
         <div className="px-4 pt-1">
-          <div className="flex h-20 w-32 items-center justify-center rounded-md border border-dashed border-border bg-muted px-2 text-center text-xs font-medium text-muted-foreground">
+          <div className="flex h-20 w-full items-center justify-center rounded-md border border-dashed border-border bg-muted px-2 text-center text-xs font-medium text-muted-foreground">
             No image available
           </div>
         </div>
