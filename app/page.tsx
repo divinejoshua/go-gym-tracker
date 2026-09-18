@@ -1,6 +1,5 @@
-import { FeedDays } from "@/components/feed-days";
+import { FeedStream } from "@/components/feed-stream";
 import { EmptyState, PageHeader, SetupNotice } from "@/components/ui";
-import { WorkoutCard } from "@/components/workout-card";
 import { getFeed } from "@/lib/queries";
 import { isSupabaseConfigured } from "@/lib/supabase";
 
@@ -17,15 +16,15 @@ export default async function HomePage({ searchParams }: PageProps<"/">) {
     );
   }
 
-  const [{ posted }, workouts] = await Promise.all([searchParams, getFeed()]);
+  const [{ posted }, page] = await Promise.all([searchParams, getFeed()]);
 
   return (
     <>
       <PageHeader
         title="Go Gym or Go Broke"
         subtitle={
-          workouts.length > 0
-            ? `${workouts.length} workout${workouts.length === 1 ? "" : "s"} logged`
+          page.total
+            ? `${page.total} workout${page.total === 1 ? "" : "s"} logged`
             : "No excuses. Post the proof."
         }
       />
@@ -36,21 +35,14 @@ export default async function HomePage({ searchParams }: PageProps<"/">) {
         </p>
       ) : null}
 
-      {workouts.length === 0 ? (
+      {page.workouts.length === 0 ? (
         <EmptyState
           title="The feed is empty"
           body="Nobody has posted proof yet. Be the one who sets the standard."
           cta={{ href: "/post", label: "Post a workout" }}
         />
       ) : (
-        <FeedDays
-          variant="feed"
-          items={workouts.map((workout) => ({
-            id: workout.id,
-            createdAt: workout.created_at,
-            card: <WorkoutCard workout={workout} />,
-          }))}
-        />
+        <FeedStream initialPage={page} />
       )}
     </>
   );

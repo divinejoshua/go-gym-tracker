@@ -1,35 +1,25 @@
 "use client";
 
-import type { ReactNode } from "react";
-
 import { useViewerTimeZone } from "@/components/viewer-time-zone";
+import { WorkoutCard } from "@/components/workout-card";
 import { groupByDay } from "@/lib/dates";
-
-export type FeedDay = {
-  id: string;
-  createdAt: string;
-  card: ReactNode;
-};
+import type { FeedWorkout } from "@/lib/types";
 
 /**
  * Day headers over a list of workouts, bucketed in the viewer's own timezone
  * so a card never sits under a date its own timestamp contradicts.
- *
- * The cards arrive already rendered on the server, so this boundary only
- * decides where the headers fall — `WorkoutCard` itself stays off the client
- * bundle.
  */
 export function FeedDays({
-  items,
+  workouts,
   variant,
 }: {
-  items: FeedDay[];
+  workouts: FeedWorkout[];
   variant: "feed" | "challenge";
 }) {
   const timeZone = useViewerTimeZone();
   const days = groupByDay(
-    items,
-    (item) => new Date(item.createdAt),
+    workouts,
+    (workout) => new Date(workout.created_at),
     new Date(),
     timeZone,
   );
@@ -44,8 +34,8 @@ export function FeedDays({
               {day.label}
             </h2>
             <div className="space-y-4">
-              {day.items.map((item) => (
-                <div key={item.id}>{item.card}</div>
+              {day.items.map((workout) => (
+                <WorkoutCard key={workout.id} workout={workout} />
               ))}
             </div>
           </section>
@@ -55,8 +45,8 @@ export function FeedDays({
               {day.label}
             </h3>
             <div className="space-y-4">
-              {day.items.map((item) => (
-                <div key={item.id}>{item.card}</div>
+              {day.items.map((workout) => (
+                <WorkoutCard key={workout.id} workout={workout} showChallenge={false} />
               ))}
             </div>
           </div>

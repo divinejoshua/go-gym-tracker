@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
+import { getFeed, type FeedCursor, type FeedPage } from "@/lib/queries";
 import { getSupabase } from "@/lib/supabase";
 import type { FormState } from "@/lib/form-state";
 import {
@@ -158,4 +159,15 @@ export async function logWorkout(
   revalidatePath(`/challenges/${challengeId}`);
 
   redirect("/?posted=1");
+}
+
+/**
+ * The next page of the home feed, for the infinite scroll.
+ *
+ * A read behind a Server Function rather than a route handler: the cursor and
+ * the page keep their types end to end, and React dispatches these one at a
+ * time, which is exactly the pacing a scroll wants.
+ */
+export async function loadMoreFeed(cursor: FeedCursor): Promise<FeedPage> {
+  return getFeed(cursor);
 }

@@ -4,7 +4,6 @@ import { notFound } from "next/navigation";
 import { FeedDays } from "@/components/feed-days";
 import { ProgressList } from "@/components/progress-list";
 import { Card, PageHeader, Pill } from "@/components/ui";
-import { WorkoutCard } from "@/components/workout-card";
 import {
   challengeStatus,
   currentWeekIndex,
@@ -117,14 +116,7 @@ export default async function ChallengePage({ params }: PageProps<"/challenges/[
             No workouts logged in this challenge yet.
           </Card>
         ) : (
-          <FeedDays
-            variant="challenge"
-            items={workouts.map((workout) => ({
-              id: workout.id,
-              createdAt: workout.created_at,
-              card: <WorkoutCard workout={workout} showChallenge={false} />,
-            }))}
-          />
+          <FeedDays variant="challenge" workouts={workouts} />
         )}
       </section>
     </>
