@@ -2,7 +2,7 @@ import Image from "next/image";
 
 import { FeedVideo } from "@/components/feed-video";
 import { Card, Pill } from "@/components/ui";
-import { timeLabel } from "@/lib/dates";
+import { LocalTime } from "@/components/viewer-time-zone";
 import { durationLabel, workoutTypeLabel, type FeedWorkout } from "@/lib/types";
 
 export function WorkoutCard({
@@ -13,7 +13,6 @@ export function WorkoutCard({
   showChallenge?: boolean;
 }) {
   const type = workoutTypeLabel(workout.workout_type);
-  const postedAt = new Date(workout.created_at);
 
   return (
     <Card className="overflow-hidden">
@@ -22,7 +21,7 @@ export function WorkoutCard({
         <div className="min-w-0 flex-1">
           <p className="truncate font-semibold">{workout.participant_name}</p>
           <p className="truncate text-xs text-muted-foreground">
-            <time dateTime={workout.created_at}>{timeLabel(postedAt)}</time>
+            <LocalTime iso={workout.created_at} />
             {workout.venue ? <> · {workout.venue}</> : null}
           </p>
         </div>

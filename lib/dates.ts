@@ -10,7 +10,28 @@ const MS_PER_DAY = 24 * 60 * 60 * 1000;
  * In production set the TZ environment variable (e.g. TZ=Europe/London) —
  * hosts default to UTC, which would file a 00:30 workout under yesterday and
  * shift week boundaries by the UTC offset.
+ *
+ * The exception is *display* of instants. `timeLabel`, `dayKey`, `dayLabel`
+ * and `groupByDay` take an optional IANA `timeZone`: the server renders in the
+ * process zone, then the client re-renders the same instant in the viewer's
+ * own zone (see `useViewerTimeZone`). Scoring never passes one — which week a
+ * workout counts towards belongs to the group, not to whoever is looking.
  */
+
+/** Read the calendar fields of an instant as they read in `timeZone`. */
+function calendarParts(date: Date, timeZone?: string) {
+  const parts = new Intl.DateTimeFormat("en-GB", {
+    timeZone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(date);
+
+  const field = (type: Intl.DateTimeFormatPartTypes) =>
+    parts.find((part) => part.type === type)?.value ?? "";
+
+  return { year: field("year"), month: field("month"), day: field("day") };
+}
 
 /**
  * Parse a Postgres `date` ("2026-09-15") as local midnight.
@@ -75,30 +96,38 @@ export function challengeStatus(
 }
 
 /** Stable YYYY-MM-DD key for grouping timestamps into days. */
-export function dayKey(date: Date): string {
-  const month = `${date.getMonth() + 1}`.padStart(2, "0");
-  const day = `${date.getDate()}`.padStart(2, "0");
-  return `${date.getFullYear()}-${month}-${day}`;
+export function dayKey(date: Date, timeZone?: string): string {
+  const { year, month, day } = calendarParts(date, timeZone);
+  return `${year}-${month}-${day}`;
 }
 
 /** "Today", "Yesterday", or "Monday, 15 September". */
-export function dayLabel(date: Date, now: Date = new Date()): string {
-  const key = dayKey(date);
-  if (key === dayKey(now)) return "Today";
-  if (key === dayKey(addDays(now, -1))) return "Yesterday";
+export function dayLabel(
+  date: Date,
+  now: Date = new Date(),
+  timeZone?: string,
+): string {
+  const key = dayKey(date, timeZone);
+  if (key === dayKey(now, timeZone)) return "Today";
+  if (key === dayKey(addDays(now, -1), timeZone)) return "Yesterday";
+
+  const sameYear =
+    calendarParts(date, timeZone).year === calendarParts(now, timeZone).year;
 
   return date.toLocaleDateString("en-GB", {
+    timeZone,
     weekday: "long",
     day: "numeric",
     month: "long",
-    ...(date.getFullYear() === now.getFullYear() ? {} : { year: "numeric" }),
+    ...(sameYear ? {} : { year: "numeric" }),
   });
 }
 
 /** "6:42 pm" */
-export function timeLabel(date: Date): string {
+export function timeLabel(date: Date, timeZone?: string): string {
   return date
     .toLocaleTimeString("en-GB", {
+      timeZone,
       hour: "numeric",
       minute: "2-digit",
       hour12: true,
@@ -119,11 +148,12 @@ export function groupByDay<T>(
   items: T[],
   getDate: (item: T) => Date,
   now: Date = new Date(),
+  timeZone?: string,
 ): Array<{ key: string; label: string; items: T[] }> {
   const buckets = new Map<string, T[]>();
 
   for (const item of items) {
-    const key = dayKey(getDate(item));
+    const key = dayKey(getDate(item), timeZone);
     const bucket = buckets.get(key);
     if (bucket) bucket.push(item);
     else buckets.set(key, [item]);
@@ -133,7 +163,7 @@ export function groupByDay<T>(
     .sort((a, b) => b[0].localeCompare(a[0]))
     .map(([key, groupItems]) => ({
       key,
-      label: dayLabel(getDate(groupItems[0]), now),
+      label: dayLabel(getDate(groupItems[0]), now, timeZone),
       items: groupItems,
     }));
 }

@@ -1,13 +1,13 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { FeedDays } from "@/components/feed-days";
 import { ProgressList } from "@/components/progress-list";
 import { Card, PageHeader, Pill } from "@/components/ui";
 import { WorkoutCard } from "@/components/workout-card";
 import {
   challengeStatus,
   currentWeekIndex,
-  groupByDay,
   parseDateOnly,
   shortDate,
   totalWeeks,
@@ -49,8 +49,6 @@ export default async function ChallengePage({ params }: PageProps<"/challenges/[
     getWeeklyProgress(challenge, weekIndex),
     getChallengeFeed(challenge.id, 30),
   ]);
-
-  const days = groupByDay(workouts, (workout) => new Date(workout.created_at));
 
   return (
     <>
@@ -114,25 +112,19 @@ export default async function ChallengePage({ params }: PageProps<"/challenges/[
           Recent proof
         </h2>
 
-        {days.length === 0 ? (
+        {workouts.length === 0 ? (
           <Card className="px-6 py-10 text-center text-sm text-muted-foreground">
             No workouts logged in this challenge yet.
           </Card>
         ) : (
-          <div className="space-y-8">
-            {days.map((day) => (
-              <div key={day.key}>
-                <h3 className="mb-3 text-xs font-bold uppercase tracking-widest text-muted-foreground">
-                  {day.label}
-                </h3>
-                <div className="space-y-4">
-                  {day.items.map((workout) => (
-                    <WorkoutCard key={workout.id} workout={workout} showChallenge={false} />
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
+          <FeedDays
+            variant="challenge"
+            items={workouts.map((workout) => ({
+              id: workout.id,
+              createdAt: workout.created_at,
+              card: <WorkoutCard workout={workout} showChallenge={false} />,
+            }))}
+          />
         )}
       </section>
     </>
